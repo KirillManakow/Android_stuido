@@ -6,6 +6,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.SimpleAdapter;
 import android.widget.TextView;
@@ -22,38 +23,55 @@ import java.util.Objects;
 
 public class MainActivity2 extends AppCompatActivity {
 
+    String ConnectionResult = "";
     Connection connection;
 
-    TextInputLayout Nazvanie;
-    TextInputLayout Adres;
-    TextInputLayout Strix_kod_tovara;
+    TextView Name_cklada;
+    TextView Adres_sklada;
+    TextView Strix_kod_sklada;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-         Nazvanie = findViewById(R.id.text_iname);
-         Adres = findViewById(R.id.text_idadres);
-         Strix_kod_tovara = findViewById(R.id.text_strixkod);
     }
 
+
     public void Add(View v) {
+
+        Name_cklada = findViewById(R.id.Name_cklada);
+        Adres_sklada = findViewById(R.id.Adres_sklada);
+        Strix_kod_sklada = findViewById(R.id.Strix_kod_sklada);
+
+        String Namec = Name_cklada.getText().toString();
+        String Adress = Adres_sklada.getText().toString();
+        String Strixs = Strix_kod_sklada.getText().toString();
+
         try {
-            ConnectionHelp connectionHelp = new ConnectionHelp();
-            connection = connectionHelp.connect();
-            String query = "insert into Cklad values("
-                         + Float.parseFloat(String.valueOf(Nazvanie.getEditText().getText())) + "\'," +
-                    "\'" + Float.parseFloat(String.valueOf(Adres.getEditText().getText()))+ "" +
-                    "\',"+ Float.parseFloat(String.valueOf(Strix_kod_tovara.getEditText().getText()))+ ")";
-                Statement statement = connection.createStatement();
-                ResultSet result = statement.executeQuery(query);
-            connection.close();
-            Log.d("", String.valueOf((result.last())));
-        }
-        catch (SQLException throwables) {
-            throwables.printStackTrace();
-            Log.d("Error - ",throwables.getMessage());
+            ConnectionHelp conectionHellper = new ConnectionHelp();
+            connection = conectionHellper.connect();
+
+            if (Name_cklada.getText().length()==0 || Adres_sklada.getText().length()==0 || Strix_kod_sklada.getText().length()==0 )
+            {
+                Toast.makeText(this,"Не заполнены обязательные поля", Toast.LENGTH_LONG).show();
+                return;
+            }
+            else
+            {
+                if (connection != null) {
+
+                    String query = "INSERT INTO Cklad (Nazvanie, Adres, Strix_kod_tovara) values ('" + Namec + "','" + Adress + "','" + Strixs + "')";
+                    Statement statement = connection.createStatement();
+                    statement.execute(query);
+                    Toast.makeText(this,"Успешно добавлено", Toast.LENGTH_LONG).show();
+                } else {
+                    ConnectionResult = "Check Connection";
+                }
+            }
+
+        } catch (SQLException throwable) {
+            throwable.printStackTrace();
         }
     }
 

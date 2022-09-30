@@ -36,6 +36,14 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
+    public void Delete(View v) {
+        switch (v.getId()) {
+            case R.id.buttondelete:
+                Intent intent = new Intent(this, RemoveActivity.class);
+                startActivity(intent);
+
+        }
+    }
 
 
  public void GetList(View v)
